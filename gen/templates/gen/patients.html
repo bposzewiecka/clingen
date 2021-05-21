@@ -1,0 +1,15 @@
+{% extends "gen/base.html" %}
+{% load static %}
+
+{% block content %}
+    {% if patients %}
+        <ul>
+        {% for patient in patients %}
+            <li><a href="">{{ patient.last_name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No patients in the database.</p>
+    {% endif %}
+{% endblock %}
+
