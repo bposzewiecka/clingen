@@ -1,13 +1,27 @@
-{% extends "gen/base.html" %}
-{% load static %}
+{% extends "gen/base_container.html" %}
 
-{% block content %}
+
+{% block content_in_container %}
+    <a role="button" class="btn btn-primary" href="{% url 'gen:add_patient' %}">Add patient</a>
     {% if patients %}
-        <ul>
+        <table class="table">
+        <tr>
+            <th>Last name</th>
+            <th>First name</th> 
+            <th>Damaged genes</th>
+            <th></th>
+            <th></th>
+        </tr>
         {% for patient in patients %}
-            <li><a href="">{{ patient.last_name }}</a></li>
+        <tr>
+            <td>{{ patient.last_name }}</td>
+            <td>{{ patient.first_name }}</td>
+            <td></td>
+            <td><a role="button" class="btn btn-primary" href="{% url 'gen:edit_patient' patient.id %}">Edit</a></td>
+            <td><a role="button" class="btn btn-danger" href="{% url 'gen:delete_patient' patient.id %}">Delete</a></td>
+        </tr>
         {% endfor %}
-        </ul>
+        </table>
     {% else %}
         <p>No patients in the database.</p>
     {% endif %}

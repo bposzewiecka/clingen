@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.forms import ModelForm
 
 class ScoreType(models.Model):
     name = models.CharField(max_length=200, unique = True)
@@ -27,6 +27,11 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.first_name + self.last_name
+
+class PatientForm(ModelForm):
+     class Meta:
+         model = Patient
+         fields = ['first_name', 'last_name', 'date_of_birth', 'phenotype']
 
 class Score(models.Model):
     gene = models.ForeignKey(Gene, on_delete=models.CASCADE)
