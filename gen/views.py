@@ -9,6 +9,7 @@ from .models import Patient, Gene, ScoreType, PatientForm
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import GeneNameForm
 
+from django.http import JsonResponse
 
 class PatientsView(generic.ListView):
     template_name = 'gen/patients.html'
@@ -96,3 +97,15 @@ def add_gene(request, patient_id):
 
 
     return  HttpResponseRedirect(reverse('gen:edit_patient', args=(patient.id,))) 
+
+
+def add_gene_json(request, patient_id):
+    gene_name = request.GET.get('gene_name', None)
+
+    patient = Patient.objects.get(pk=patient_id)
+    gene = Gene.objects.get(name = gene_name)
+    patient.damaged_genes.add(gene)
+    patient.save()
+
+    data = { 'status': 'ok', 'message': f'jest ok' }
+    return JsonResponse(data)
