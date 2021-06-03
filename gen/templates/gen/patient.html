@@ -1,0 +1,90 @@
+{% extends "gen/base_container.html" %}
+
+
+{% block content_in_container %}
+
+
+<form action="{% if patient.id %}{% url 'gen:edit_patient' patient_id=patient.id %}{% else %}{% url 'gen:add_patient' %}{% endif %}" method="post">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+    <div class="form-group">
+        {{ form.first_name.errors }}
+        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+        <input type="text" class="form-control" id="{{ form.first_name.id_for_label }}" value="{{ form.first_name.value }}" name="{{ form.first_name.html_name}}">
+    </div>
+    <div class="form-group">
+        {{ form.last_name.errors }}
+        <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+        <input type="text" class="form-control" id="{{ form.last_name.id_for_label }}" value="{{ form.last_name.value }}"  name="{{ form.last_name.html_name}}">
+    </div>
+    <div class="form-group">
+        {{ form.date_of_birth.errors }}
+        <label for="{{ form.date_of_birth.id_for_label }}">{{ form.date_of_birth.label }}</label>
+        <input  class="form-control datepicker" id="{{ form.date_of_birth.id_for_label }}" value="{{ form.date_of_birth.value|date:'m/d/Y' }}" name="{{ form.date_of_birth.html_name}}">
+    </div>
+    <div class="form-group">
+        {{ form.phenotype.errors }}
+        <label for="{{ form.phenotype.id_for_label }}">{{ form.phenotype.label }}</label>
+        <input type="text" class="form-control" id="{{ form.phenotype.id_for_label }}" value="{{ form.phenotype.value }}" name="{{ form.phenotype.html_name}}">
+    </div>
+
+    <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+</form>
+
+{% if patient %}
+
+    {% if patient.damaged_genes %}
+
+    <table class="table" id="genes">
+        {% for gene in patient.damaged_genes.all %}
+            <tr>
+                <td>{{gene.name}}</td>
+                <td><a role="button" class="btn btn-danger" href="">Delete gene</td>
+            </tr>
+        {% endfor %}
+    <table>
+
+    {% endif %}
+
+
+    <form >
+        {% csrf_token %}
+      
+       <div class="form-group">
+            <label for="{{ gene_name_form.gene_name.id_for_label }}">{{ gene_name_form.gene_name.label }}</label>
+            <input type="text" class="form-control" id="{{ gene_name_form.gene_name.id_for_label }}" name="{{gene_name_form.gene_name.html_name }}">
+        </div>    
+        <button id="add_gene" type="submit" class="btn btn-primary">Add gene</button>
+    </form>
+
+{% endif %}
+
+{% endblock %}
+
+
+{% block javascript %}
+
+{% if patient %}
+
+<script>
+
+
+$('#add_gene').click( function(e)  {
+    e.preventDefault()
+    var gene_name = $('#id_gene_name').val();
+    $.ajax({url: "{% url 'gen:add_gene_json' patient_id=patient.id %}", data: {'gene_name': gene_name}, dataType: 'json', 
+        success: function(data) { console.log(data)
+            if (data['status'] == 'ok') {
+            //
+            }
+
+        }})
+});
+
+</script>
+
+
+{% endif %}
+
+{% endblock %}
